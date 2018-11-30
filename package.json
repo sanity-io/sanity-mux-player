@@ -1,0 +1,52 @@
+{
+  "name": "sanity-mux-player",
+  "version": "0.0.17",
+  "description": "A video player to play videos uploaded with the Sanity MUX plugin",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "babel src -d build --copy-files",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanity-io/sanity-plugin-mux-input.git"
+  },
+  "keywords": [
+    "sanity",
+    "video",
+    "mux",
+    "player"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Sanity.io <hello@sanity.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sanity-io/sanity-mux-player/issues"
+  },
+  "homepage": "https://github.com/sanity-io/sanity-mux-player#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^9.0.0",
+    "eslint": "^5.6.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-config-sanity": "^4.0.2",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.7.0",
+    "prettier": "^1.14.2",
+    "react-hot-loader": "4.3.8"
+  },
+  "dependencies": {
+    "hls.js": "^0.11.0",
+    "prop-types": "^15.6.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.3.x"
+  }
+}
