@@ -103,21 +103,34 @@ class SanityMuxPlayer extends Component {
             this.setState({error: data})
             break
           default:
-            console.error(data) // eslint-disable-line no-console
+            this.setState({error: data})
         }
+        console.error(data) // eslint-disable-line no-console
       })
     } else if (this.video.current.canPlayType('application/vnd.apple.mpegurl')) {
       this.video.current.src = this.state.source
       this.video.current.addEventListener('loadedmetadata', () => {
-        this.hls.loadSource(this.state.source)
-        this.hls.attachMedia(this.video.current)
+        this.videoContainer.current.style.display = 'block'
+      })
+      this.video.current.addEventListener('error', () => {
+        this.videoContainer.current.style.display = 'none'
+        this.setState({
+          error: {
+            type: `${this.video.current.error.constructor.name} code ${
+              this.video.current.error.code
+            }`
+          }
+        })
+        console.error(this.video.current.error) // eslint-disable-line no-console
       })
     }
   }
 
   handleVideoClick = event => {
     this.setState({showControls: true})
-    this.hls.startLoad(0)
+    if (this.hls) {
+      this.hls.startLoad(0)
+    }
   }
 
   // eslint-disable-next-line complexity
