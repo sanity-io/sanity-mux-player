@@ -10,6 +10,7 @@ const propTypes = {
   assetDocument: PropTypes.object.isRequired,
   autoload: PropTypes.bool,
   autoplay: PropTypes.bool,
+  loop: PropTypes.bool,
   showControls: PropTypes.bool,
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
@@ -166,6 +167,7 @@ class SanityMuxPlayer extends Component {
             controls={showControls}
             muted={this.props.autoplay || false}
             autoPlay={this.props.autoplay || false}
+            loop={this.props.loop || false}
             ref={this.video}
             poster={posterUrl}
           />
