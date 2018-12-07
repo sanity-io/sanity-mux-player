@@ -12,8 +12,8 @@ const propTypes = {
   autoplay: PropTypes.bool,
   loop: PropTypes.bool,
   showControls: PropTypes.bool,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   style: PropTypes.object,
   className: PropTypes.string
 }
@@ -29,10 +29,13 @@ class SanityMuxPlayer extends Component {
   static defaultProps = {
     autoload: true,
     autoplay: false,
-    width: '100%',
+    className: '',
     height: '',
+    loop: false,
+    muted: false,
+    showControls: true,
     style: {width: '100%', height: 'auto'},
-    className: ''
+    width: '100%'
   }
 
   videoContainer = React.createRef()
@@ -103,7 +106,11 @@ class SanityMuxPlayer extends Component {
             this.videoContainer.current.style.display = 'none'
             this.setState({error: data})
             break
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            // Don't output anything visible as these mostly are non-fatal
+            break
           default:
+            this.videoContainer.current.style.display = 'none'
             this.setState({error: data})
         }
         console.error(data) // eslint-disable-line no-console
@@ -165,9 +172,9 @@ class SanityMuxPlayer extends Component {
             height={this.props.height}
             onClick={autoload ? NOOP : this.handleVideoClick}
             controls={showControls}
-            muted={this.props.autoplay || false}
-            autoPlay={this.props.autoplay || false}
-            loop={this.props.loop || false}
+            muted={this.props.autoplay || this.props.muted} // Force mute if autoplay (or it might not even work at all)
+            autoPlay={this.props.autoplay}
+            loop={this.props.loop}
             ref={this.video}
             poster={posterUrl}
           />

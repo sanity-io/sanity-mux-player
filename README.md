@@ -13,11 +13,13 @@ Play videos from MUX.com integrated with the Sanity plugin [`sanity-plugin-mux-i
     assetDocument={assetDocument}
     autoload={true|false}
     autoplay={true|false}
+    className={string}
+    height={number|percent}
+    loop={true|false}
+    muted={true|false}
     showControls={true|false}
     style={{}}
-    className={string}
     width={number|percent}
-    height={number|percent}
   />
 ```
 
