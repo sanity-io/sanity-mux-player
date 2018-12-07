@@ -4,8 +4,6 @@ import Hls from 'hls.js'
 
 import getPosterSrc from '../util/getPosterSrc'
 
-const NOOP = () => {}
-
 const propTypes = {
   assetDocument: PropTypes.object.isRequired,
   autoload: PropTypes.bool,
@@ -15,7 +13,9 @@ const propTypes = {
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   style: PropTypes.object,
-  className: PropTypes.string
+  className: PropTypes.string,
+  poster: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  onClick: PropTypes.func
 }
 
 class SanityMuxPlayer extends Component {
@@ -35,7 +35,8 @@ class SanityMuxPlayer extends Component {
     muted: false,
     showControls: true,
     style: {width: '100%', height: 'auto'},
-    width: '100%'
+    width: '100%',
+    poster: true
   }
 
   videoContainer = React.createRef()
@@ -46,7 +47,7 @@ class SanityMuxPlayer extends Component {
     let source = null
     let posterUrl = null
     let isLoading = true
-    const {assetDocument} = nextProps
+    const {assetDocument, poster} = nextProps
     if (assetDocument && assetDocument.status === 'preparing') {
       isLoading = 'MUX is processing the video'
     }
@@ -55,13 +56,19 @@ class SanityMuxPlayer extends Component {
     }
     if (assetDocument && assetDocument.playbackId) {
       source = `https://stream.mux.com/${assetDocument.playbackId}.m3u8`
-      posterUrl = getPosterSrc(assetDocument.playbackId, {
-        time: assetDocument.thumbTime || 1,
-        fitMode: 'preserve'
-      })
+      // Load video poster only if explictly requested.
+      if (poster === true) {
+        posterUrl = getPosterSrc(assetDocument.playbackId, {
+          time: assetDocument.thumbTime || 1,
+          fitMode: 'preserve'
+        })
+      }
     }
     if (assetDocument && typeof assetDocument.status === 'undefined') {
       isLoading = false
+    }
+    if (typeof poster === "string") {
+      posterUrl = poster
     }
     return {isLoading, source, posterUrl}
   }
@@ -135,16 +142,28 @@ class SanityMuxPlayer extends Component {
   }
 
   handleVideoClick = event => {
-    this.setState({showControls: true})
-    if (this.hls) {
-      this.hls.startLoad(0)
+    if (!autoload) {
+      this.setState({showControls: true})
+      if (this.hls) {
+        this.hls.startLoad(0)
+      }
+    }
+    if (this.props.onClick) {
+      this.props.onClick(event)
     }
   }
 
   // eslint-disable-next-line complexity
   render() {
     const {posterUrl, isLoading, error} = this.state
-    const {assetDocument, autoload} = this.props
+    const {
+      assetDocument, autoload,
+      showControls: showControlsProp,
+      autoplay, muted, children,
+      poster,
+      ...videoProps
+    } = this.props
+
     if (!assetDocument || !assetDocument.status) {
       return null
     }
@@ -160,7 +179,7 @@ class SanityMuxPlayer extends Component {
     }
 
     let showControls = autoload || this.state.showControls
-    if (this.props.showControls === false) {
+    if (showControlsProp === false) {
       showControls = false
     }
 
@@ -168,23 +187,21 @@ class SanityMuxPlayer extends Component {
       <div className={this.props.className} style={this.props.style}>
         <div ref={this.videoContainer}>
           <video
-            width={this.props.width}
-            height={this.props.height}
-            onClick={autoload ? NOOP : this.handleVideoClick}
+            onClick={this.handleVideoClick}
             controls={showControls}
-            muted={this.props.autoplay || this.props.muted} // Force mute if autoplay (or it might not even work at all)
-            autoPlay={this.props.autoplay}
-            loop={this.props.loop}
+            muted={autoplay || muted} // Force mute if autoplay (or it might not even work at all)
+            autoPlay={autoplay}
             ref={this.video}
             poster={posterUrl}
+            {...videoProps}
           />
         </div>
         {error && (
           <div className="SanityMuxPlayerInfoContainer SanityMuxPlayerError">
-            There was an error loading this video ({error.type}
-            ).
+            There was an error loading this video ({error.type}).
           </div>
         )}
+        { children }
       </div>
     )
   }
