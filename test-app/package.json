@@ -26,8 +26,11 @@
     "url": "https://github.com/sanity-io/sanity-mux-player/issues"
   },
   "homepage": "https://github.com/sanity-io/sanity-mux-player#readme",
-  "peerDependencies": {
-    "react": ">=16.3.x"
+  "dependencies": {
+    "react": "16.5.2",
+    "react-dom": "16.5.2",
+    "react-hot-loader": "4.3.8",
+    "react-scripts": "2.0.3"
   },
   "browserslist": [
     ">0.2%",
