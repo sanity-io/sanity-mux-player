@@ -142,6 +142,7 @@ class SanityMuxPlayer extends Component {
   }
 
   handleVideoClick = event => {
+    const {autoload} = this.props
     if (!autoload) {
       this.setState({showControls: true})
       if (this.hls) {
