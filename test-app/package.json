@@ -1,0 +1,38 @@
+{
+  "name": "sanity-mux-player-test-app",
+  "version": "0.0.0",
+  "description": "Just for testing the sanity-mux-player locally",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "babel src -d build --copy-files",
+    "test-app": "cd ./test-app && react-scripts start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanity-io/sanity-plugin-mux-input.git"
+  },
+  "keywords": [
+    "sanity",
+    "video",
+    "mux",
+    "player"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Sanity.io <hello@sanity.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sanity-io/sanity-mux-player/issues"
+  },
+  "homepage": "https://github.com/sanity-io/sanity-mux-player#readme",
+  "peerDependencies": {
+    "react": ">=16.3.x"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
