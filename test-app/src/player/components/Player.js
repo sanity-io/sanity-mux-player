@@ -226,6 +226,10 @@ function (_Component) {
       }, _react.default.createElement("div", {
         ref: this.videoContainer
       }, _react.default.createElement("video", {
+        style: {
+          display: 'block'
+        } // Needs to be here to avoid 1px gap in the bottom of controls
+        ,
         width: this.props.width,
         height: this.props.height,
         onClick: autoload ? NOOP : this.handleVideoClick,
