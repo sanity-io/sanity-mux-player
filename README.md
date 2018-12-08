@@ -25,4 +25,4 @@ Play videos from MUX.com integrated with the Sanity plugin [`sanity-plugin-mux-i
 
 # Codebox example
 
-We have made an example here: https://codesandbox.io/s/814v6j934j
+Run the test app on [Codesandbox](https://codesandbox.io/s/github/sanity-io/sanity-mux-player/tree/master/test-app)

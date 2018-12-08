@@ -198,6 +198,7 @@ class SanityMuxPlayer extends Component {
       <div className={this.props.className} style={this.props.style}>
         <div ref={this.videoContainer}>
           <video
+            style={{display: 'block'}} // Needs to be here to avoid 1px gap in the bottom of controls
             onClick={this.handleVideoClick}
             controls={showControls}
             muted={this.props.autoplay || this.props.muted} // Force mute if autoplay (or it might not even work at all)
