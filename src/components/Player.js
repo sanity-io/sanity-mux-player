@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import Hls from 'hls.js'
 
+import omit from 'lodash/omit'
 import getPosterSrc from '../util/getPosterSrc'
 
 const propTypes = {
@@ -17,6 +18,19 @@ const propTypes = {
   poster: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   onClick: PropTypes.func
 }
+
+const handledPropNames = [
+  'assetDocument',
+  'autoload',
+  'autoplay',
+  'muted',
+  'showControls',
+  'style',
+  'className',
+  'poster',
+  'onClick',
+  'children'
+]
 
 class SanityMuxPlayer extends Component {
   state = {
@@ -157,13 +171,7 @@ class SanityMuxPlayer extends Component {
   // eslint-disable-next-line complexity
   render() {
     const {posterUrl, isLoading, error} = this.state
-    const {
-      assetDocument, autoload,
-      showControls: showControlsProp,
-      autoplay, muted, children,
-      poster,
-      ...videoProps
-    } = this.props
+    const {assetDocument, autoload, children} = this.props
 
     if (!assetDocument || !assetDocument.status) {
       return null
@@ -180,9 +188,11 @@ class SanityMuxPlayer extends Component {
     }
 
     let showControls = autoload || this.state.showControls
-    if (showControlsProp === false) {
+    if (this.props.showControls === false) {
       showControls = false
     }
+
+    const videoProps = omit(this.props, handledPropNames)
 
     return (
       <div className={this.props.className} style={this.props.style}>
@@ -190,8 +200,8 @@ class SanityMuxPlayer extends Component {
           <video
             onClick={this.handleVideoClick}
             controls={showControls}
-            muted={autoplay || muted} // Force mute if autoplay (or it might not even work at all)
-            autoPlay={autoplay}
+            muted={this.props.autoplay || this.props.muted} // Force mute if autoplay (or it might not even work at all)
+            autoPlay={this.props.autoplay}
             ref={this.video}
             poster={posterUrl}
             {...videoProps}
