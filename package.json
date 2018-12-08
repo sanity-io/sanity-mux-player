@@ -5,7 +5,8 @@
   "main": "build/index.js",
   "scripts": {
     "build": "babel src -d build --copy-files",
-    "test-app": "babel src -d build --copy-files --watch & cd ./test-app && react-scripts start"
+    "prepublish": "npm run build",
+    "test-app": "babel src -d test-app/src/player --copy-files --watch & cd ./test-app && react-app-rewired start"
   },
   "repository": {
     "type": "git",
@@ -41,9 +42,11 @@
     "eslint-plugin-react": "^7.7.0",
     "prettier": "^1.14.2",
     "react": "16.5.2",
+    "react-app-rewire-eslint": "^0.2.3",
+    "react-app-rewired": "1.6.2",
     "react-dom": "16.5.2",
     "react-hot-loader": "4.3.8",
-    "react-scripts": "2.0.3"
+    "react-scripts": "^2.1.1"
   },
   "dependencies": {
     "hls.js": "^0.11.0",

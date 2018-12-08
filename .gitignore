@@ -8,7 +8,6 @@
 
 # production
 /build
-build
 
 # misc
 .DS_Store
@@ -143,10 +142,10 @@ typings/
 
 # next.js build output
 .next
-build
 
 .serverless
 .webpack
 storybook-static
 
 sanity/dist
+/test-app/node_modules

@@ -1,5 +1,7 @@
+/* eslint-disable camelcase */
+
 import React, {Component} from 'react'
-import SanityMuxPlayer from './build'
+import SanityMuxPlayer from './player'
 
 // Just for test. You would get the asset document from the client in real life.
 const assetDocument = {
@@ -42,15 +44,16 @@ const assetDocument = {
 }
 
 class Video extends Component {
+  // eslint-disable-next-line class-methods-use-this
   render() {
     return (
       <SanityMuxPlayer
         assetDocument={assetDocument}
-        autoload={false}
-        autoplay={true}
+        autoload={true}
+        autoplay={false}
         showControls={true}
         muted={false}
-        loop={true}
+        loop={false}
       />
     )
   }

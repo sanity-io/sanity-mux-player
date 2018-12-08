@@ -4,8 +4,7 @@
   "description": "Just for testing the sanity-mux-player locally",
   "main": "build/index.js",
   "scripts": {
-    "build": "babel src -d build --copy-files",
-    "test-app": "cd ./test-app && react-scripts start"
+    "start": "react-app-rewired start"
   },
   "repository": {
     "type": "git",
@@ -17,25 +16,26 @@
     "mux",
     "player"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sanity-io/sanity-mux-player/issues"
   },
   "homepage": "https://github.com/sanity-io/sanity-mux-player#readme",
-  "dependencies": {
-    "react": "16.5.2",
-    "react-dom": "16.5.2",
-    "react-hot-loader": "4.3.8",
-    "react-scripts": "2.0.3"
-  },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "dependencies": {
+    "hls.js": "^0.11.0",
+    "prop-types": "^15.6.0",
+    "react": "16.5.2",
+    "react-app-rewire-eslint": "^0.2.3",
+    "react-app-rewired": "1.6.2",
+    "react-dom": "16.5.2",
+    "react-hot-loader": "4.3.8",
+    "react-scripts": "^2.1.1"
+  }
 }
