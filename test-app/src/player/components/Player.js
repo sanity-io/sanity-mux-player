@@ -11,6 +11,8 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _hls = _interopRequireDefault(require("hls.js"));
 
+var _omit = _interopRequireDefault(require("lodash/omit"));
+
 var _getPosterSrc = _interopRequireDefault(require("../util/getPosterSrc"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -18,6 +20,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -37,8 +41,6 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var NOOP = function NOOP() {};
-
 var propTypes = {
   assetDocument: _propTypes.default.object.isRequired,
   autoload: _propTypes.default.bool,
@@ -48,8 +50,11 @@ var propTypes = {
   width: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number]),
   height: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.number]),
   style: _propTypes.default.object,
-  className: _propTypes.default.string
+  className: _propTypes.default.string,
+  poster: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.bool]),
+  onClick: _propTypes.default.func
 };
+var handledPropNames = ['assetDocument', 'autoload', 'autoplay', 'muted', 'showControls', 'style', 'className', 'poster', 'onClick', 'children'];
 
 var SanityMuxPlayer =
 /*#__PURE__*/
@@ -81,12 +86,20 @@ function (_Component) {
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "hls", null);
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleVideoClick", function (event) {
-      _this.setState({
-        showControls: true
-      });
+      var autoload = _this.props.autoload;
 
-      if (_this.hls) {
-        _this.hls.startLoad(0);
+      if (!autoload) {
+        _this.setState({
+          showControls: true
+        });
+
+        if (_this.hls) {
+          _this.hls.startLoad(0);
+        }
+      }
+
+      if (_this.props.onClick) {
+        _this.props.onClick(event);
       }
     });
 
@@ -199,7 +212,8 @@ function (_Component) {
           error = _this$state.error;
       var _this$props = this.props,
           assetDocument = _this$props.assetDocument,
-          autoload = _this$props.autoload;
+          autoload = _this$props.autoload,
+          children = _this$props.children;
 
       if (!assetDocument || !assetDocument.status) {
         return null;
@@ -220,29 +234,27 @@ function (_Component) {
         showControls = false;
       }
 
+      var videoProps = (0, _omit.default)(this.props, handledPropNames);
       return _react.default.createElement("div", {
         className: this.props.className,
         style: this.props.style
       }, _react.default.createElement("div", {
         ref: this.videoContainer
-      }, _react.default.createElement("video", {
+      }, _react.default.createElement("video", _extends({
         style: {
           display: 'block'
         } // Needs to be here to avoid 1px gap in the bottom of controls
         ,
-        width: this.props.width,
-        height: this.props.height,
-        onClick: autoload ? NOOP : this.handleVideoClick,
+        onClick: this.handleVideoClick,
         controls: showControls,
         muted: this.props.autoplay || this.props.muted // Force mute if autoplay (or it might not even work at all)
         ,
         autoPlay: this.props.autoplay,
-        loop: this.props.loop,
         ref: this.video,
         poster: posterUrl
-      })), error && _react.default.createElement("div", {
+      }, videoProps))), error && _react.default.createElement("div", {
         className: "SanityMuxPlayerInfoContainer SanityMuxPlayerError"
-      }, "There was an error loading this video (", error.type, ")."));
+      }, "There was an error loading this video (", error.type, ")."), children);
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -251,7 +263,8 @@ function (_Component) {
       var source = null;
       var posterUrl = null;
       var isLoading = true;
-      var assetDocument = nextProps.assetDocument;
+      var assetDocument = nextProps.assetDocument,
+          poster = nextProps.poster;
 
       if (assetDocument && assetDocument.status === 'preparing') {
         isLoading = 'MUX is processing the video';
@@ -262,15 +275,22 @@ function (_Component) {
       }
 
       if (assetDocument && assetDocument.playbackId) {
-        source = "https://stream.mux.com/".concat(assetDocument.playbackId, ".m3u8");
-        posterUrl = (0, _getPosterSrc.default)(assetDocument.playbackId, {
-          time: assetDocument.thumbTime || 1,
-          fitMode: 'preserve'
-        });
+        source = "https://stream.mux.com/".concat(assetDocument.playbackId, ".m3u8"); // Load video poster only if explictly requested.
+
+        if (poster === true) {
+          posterUrl = (0, _getPosterSrc.default)(assetDocument.playbackId, {
+            time: assetDocument.thumbTime || 1,
+            fitMode: 'preserve'
+          });
+        }
       }
 
       if (assetDocument && typeof assetDocument.status === 'undefined') {
         isLoading = false;
+      }
+
+      if (typeof poster === "string") {
+        posterUrl = poster;
       }
 
       return {
@@ -296,7 +316,8 @@ _defineProperty(SanityMuxPlayer, "defaultProps", {
     width: '100%',
     height: 'auto'
   },
-  width: '100%'
+  width: '100%',
+  poster: true
 });
 
 SanityMuxPlayer.propTypes = propTypes;

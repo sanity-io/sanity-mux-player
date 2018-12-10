@@ -1,6 +1,6 @@
 {
   "name": "sanity-mux-player",
-  "version": "0.0.24",
+  "version": "0.0.26",
   "description": "A video player to play videos in the front end uploaded with the Sanity MUX plugin",
   "main": "build/index.js",
   "scripts": {
