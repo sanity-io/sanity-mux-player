@@ -2,9 +2,8 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import Hls from 'hls.js'
 
+import omit from 'lodash/omit'
 import getPosterSrc from '../util/getPosterSrc'
-
-const NOOP = () => {}
 
 const propTypes = {
   assetDocument: PropTypes.object.isRequired,
@@ -15,8 +14,23 @@ const propTypes = {
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   style: PropTypes.object,
-  className: PropTypes.string
+  className: PropTypes.string,
+  poster: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  onClick: PropTypes.func
 }
+
+const handledPropNames = [
+  'assetDocument',
+  'autoload',
+  'autoplay',
+  'muted',
+  'showControls',
+  'style',
+  'className',
+  'poster',
+  'onClick',
+  'children'
+]
 
 class SanityMuxPlayer extends Component {
   state = {
@@ -35,7 +49,8 @@ class SanityMuxPlayer extends Component {
     muted: false,
     showControls: true,
     style: {width: '100%', height: 'auto'},
-    width: '100%'
+    width: '100%',
+    poster: true
   }
 
   videoContainer = React.createRef()
@@ -46,7 +61,7 @@ class SanityMuxPlayer extends Component {
     let source = null
     let posterUrl = null
     let isLoading = true
-    const {assetDocument} = nextProps
+    const {assetDocument, poster} = nextProps
     if (assetDocument && assetDocument.status === 'preparing') {
       isLoading = 'MUX is processing the video'
     }
@@ -55,13 +70,19 @@ class SanityMuxPlayer extends Component {
     }
     if (assetDocument && assetDocument.playbackId) {
       source = `https://stream.mux.com/${assetDocument.playbackId}.m3u8`
-      posterUrl = getPosterSrc(assetDocument.playbackId, {
-        time: assetDocument.thumbTime || 1,
-        fitMode: 'preserve'
-      })
+      // Load video poster only if explictly requested.
+      if (poster === true) {
+        posterUrl = getPosterSrc(assetDocument.playbackId, {
+          time: assetDocument.thumbTime || 1,
+          fitMode: 'preserve'
+        })
+      }
     }
     if (assetDocument && typeof assetDocument.status === 'undefined') {
       isLoading = false
+    }
+    if (typeof poster === "string") {
+      posterUrl = poster
     }
     return {isLoading, source, posterUrl}
   }
@@ -135,16 +156,23 @@ class SanityMuxPlayer extends Component {
   }
 
   handleVideoClick = event => {
-    this.setState({showControls: true})
-    if (this.hls) {
-      this.hls.startLoad(0)
+    const {autoload} = this.props
+    if (!autoload) {
+      this.setState({showControls: true})
+      if (this.hls) {
+        this.hls.startLoad(0)
+      }
+    }
+    if (this.props.onClick) {
+      this.props.onClick(event)
     }
   }
 
   // eslint-disable-next-line complexity
   render() {
     const {posterUrl, isLoading, error} = this.state
-    const {assetDocument, autoload} = this.props
+    const {assetDocument, autoload, children} = this.props
+
     if (!assetDocument || !assetDocument.status) {
       return null
     }
@@ -164,28 +192,28 @@ class SanityMuxPlayer extends Component {
       showControls = false
     }
 
+    const videoProps = omit(this.props, handledPropNames)
+
     return (
       <div className={this.props.className} style={this.props.style}>
         <div ref={this.videoContainer}>
           <video
             style={{display: 'block'}} // Needs to be here to avoid 1px gap in the bottom of controls
-            width={this.props.width}
-            height={this.props.height}
-            onClick={autoload ? NOOP : this.handleVideoClick}
+            onClick={this.handleVideoClick}
             controls={showControls}
             muted={this.props.autoplay || this.props.muted} // Force mute if autoplay (or it might not even work at all)
             autoPlay={this.props.autoplay}
-            loop={this.props.loop}
             ref={this.video}
             poster={posterUrl}
+            {...videoProps}
           />
         </div>
         {error && (
           <div className="SanityMuxPlayerInfoContainer SanityMuxPlayerError">
-            There was an error loading this video ({error.type}
-            ).
+            There was an error loading this video ({error.type}).
           </div>
         )}
+        { children }
       </div>
     )
   }
