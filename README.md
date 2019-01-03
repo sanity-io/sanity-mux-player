@@ -8,7 +8,7 @@ Play videos from MUX.com integrated with the Sanity plugin [`sanity-plugin-mux-i
 
 - Then use the player like so:
 
-```
+```js
   <SanityMuxPlayer
     assetDocument={assetDocument}
     autoload={true|false}
