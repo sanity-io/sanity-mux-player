@@ -38,9 +38,9 @@ const assetDocument = {
     ]
   },
   filename: 'SampleVideo_1280x720_30mb.mp4',
-  playbackId: 'oxWh34cgT802eHzHIhPXWoHsZb9htpkZL',
+  playbackId: 'sRXwrKHnIO2WJ8GZNRlHY00oxAbI2f2W6',
   status: 'ready',
-  thumbTime: 106.370451
+  thumbTime: 13.736837
 }
 
 class Video extends Component {
