@@ -9,20 +9,20 @@ Play videos from MUX.com integrated with the Sanity plugin [`sanity-plugin-mux-i
 - Then use the player like so:
 
 ```js
-  <SanityMuxPlayer
-    assetDocument={assetDocument}
-    autoload={true|false}
-    autoplay={true|false}
-    className={string}
-    height={number|percent}
-    loop={true|false}
-    muted={true|false}
-    showControls={true|false}
-    style={{}}
-    width={number|percent}
-  />
+<SanityMuxPlayer
+  assetDocument={assetDocument}
+  autoload={true | false}
+  autoplay={true | false}
+  className={string}
+  height={number | percent}
+  loop={true | false}
+  muted={true | false}
+  showControls={true | false}
+  style={{}}
+  width={number | percent}
+/>
 ```
 
 # Codebox example
 
-Run the test app on [Codesandbox](https://codesandbox.io/s/github/sanity-io/sanity-mux-player/tree/master/test-app)
+Run the test app on [Codesandbox](https://codesandbox.io/s/github/sanity-io/sanity-mux-player/tree/main/test-app)
