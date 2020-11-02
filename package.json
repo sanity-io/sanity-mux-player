@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "babel src -d build --copy-files",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "test-app": "babel src -d test-app/src/player --copy-files --watch & cd ./test-app && react-app-rewired start --scripts-version react-scripts-rewired"
   },
   "repository": {
