@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import Hls from 'hls.js'
@@ -81,7 +82,7 @@ class SanityMuxPlayer extends Component {
     if (assetDocument && typeof assetDocument.status === 'undefined') {
       isLoading = false
     }
-    if (typeof poster === "string") {
+    if (typeof poster === 'string') {
       posterUrl = poster
     }
     return {isLoading, source, posterUrl}
@@ -94,14 +95,22 @@ class SanityMuxPlayer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.source !== null && this.video.current && !this.video.current.src) {
-      this.setState({error: null})
+      if (this.state.error) {
+        this.setState({error: null})
+      }
+
       this.attachVideo()
     }
+
     if (this.state.source !== null && this.state.source !== prevState.source) {
-      this.setState({error: null, showControls: false})
+      if (this.state.error || this.state.showControls) {
+        this.setState({error: null, showControls: false})
+      }
+
       if (this.hls) {
         this.hls.destroy()
       }
+
       this.attachVideo()
     }
   }
@@ -145,9 +154,7 @@ class SanityMuxPlayer extends Component {
         this.videoContainer.current.style.display = 'none'
         this.setState({
           error: {
-            type: `${this.video.current.error.constructor.name} code ${
-              this.video.current.error.code
-            }`
+            type: `${this.video.current.error.constructor.name} code ${this.video.current.error.code}`
           }
         })
         console.error(this.video.current.error) // eslint-disable-line no-console
@@ -168,7 +175,6 @@ class SanityMuxPlayer extends Component {
     }
   }
 
-  // eslint-disable-next-line complexity
   render() {
     const {posterUrl, isLoading, error} = this.state
     const {assetDocument, autoload, children} = this.props
@@ -213,7 +219,7 @@ class SanityMuxPlayer extends Component {
             There was an error loading this video ({error.type}).
           </div>
         )}
-        { children }
+        {children}
       </div>
     )
   }
