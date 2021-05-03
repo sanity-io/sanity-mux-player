@@ -20,6 +20,7 @@ Play videos from MUX.com integrated with the Sanity plugin [`sanity-plugin-mux-i
   showControls={true | false}
   style={{}}
   width={number | percent}
+  poster={boolean | string} // defaults to true, an URL can be provided to override the Mux asset thumbnail
 />
 ```
 
