@@ -1,29 +1,3 @@
 # Sanity Mux Video Player
 
-Play videos from MUX.com integrated with the Sanity plugin [`sanity-plugin-mux-input`](https://github.com/sanity-io/sanity-plugin-mux-input)
-
-# Using
-
-- First you need to have a `mux.videoAsset` asset document in your hand. These documents are referenced to in the type `mux.video` that you will use inside your own types.
-
-- Then use the player like so:
-
-```js
-<SanityMuxPlayer
-  assetDocument={assetDocument}
-  autoload={true | false}
-  autoplay={true | false}
-  className={string}
-  height={number | percent}
-  loop={true | false}
-  muted={true | false}
-  showControls={true | false}
-  style={{}}
-  width={number | percent}
-  poster={boolean | string} // defaults to true, an URL can be provided to override the Mux asset thumbnail
-/>
-```
-
-# Codebox example
-
-Run the test app on [Codesandbox](https://codesandbox.io/s/github/sanity-io/sanity-mux-player/tree/main/test-app)
+This library is deprecated in favor of [Mux Player](https://www.mux.com/player), try the [Codesandbox example](https://codesandbox.io/s/github/sanity-io/sanity-plugin-mux-input/tree/main/example).
